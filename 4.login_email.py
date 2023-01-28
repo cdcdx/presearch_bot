@@ -180,7 +180,7 @@ def loop_search(email, driver):
         driver.get(link)
         wait = ui.WebDriverWait(driver, 60)
         wait.until(page_loaded)
-        sleep(60)
+        sleep(600)
     except ValueError as e:
         print(e)
         print("\n\nSomething went wrong!\nPlease re-run the bot to try again")

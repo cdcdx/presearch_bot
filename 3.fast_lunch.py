@@ -14,6 +14,8 @@ import random
 import os
 import pickle
 import time
+# 全局锁
+mutex = threading.Lock()
 # 定时任务
 from apscheduler.schedulers.blocking import BlockingScheduler
 # 随机字符串
@@ -67,6 +69,13 @@ def check_is_logged_in(driver):
     return False
 
 
+def deleteLoginCache(email):
+    if os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
+        os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
+    if os.path.exists("google-chrome//"+email):
+        shutil.rmtree("google-chrome//"+email)
+
+
 def writeNeedLogin(email, password):
     if check_login_reload(email):
         return
@@ -102,6 +111,12 @@ def check_local_today_task(email):
     for t in today_finish:
         if t.startswith(email):
             return True
+    return False
+
+
+def check_local_login(email):
+    if not os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
+        return True
     return False
 
 
@@ -178,10 +193,10 @@ def loop_search(email, driver):
                 print(email, "search", str(i_2), "->", word, "=>", str(search_result))
                 # if not search_result:
                 #     return
-                # sleep(random.randint(2, config["delay"]))
-                sleep(max(config["delay"], 2))
+                # sleep(random.randint(3, config["delay"]))
+                sleep(max(config["delay"], 3))
 
-                if i%6 == 1:
+                if i%5 == 1:
                     # It will do the daily searches only if they are not all done yet.
                     day_task = check_day_searchs(email, driver)
                     if day_task:
@@ -192,8 +207,8 @@ def loop_search(email, driver):
                 if not search(word, driver):
                     return
                 print("search", word)
-                # sleep(random.randint(2, config["delay"]))
-                sleep(max(config["delay"], 2))
+                # sleep(random.randint(3, config["delay"]))
+                sleep(max(config["delay"], 3))
         
         # check_day_searchs(email, driver)
 
@@ -214,6 +229,8 @@ def search(word, driver):
     except ValueError as e:
         print(e)
         print("\n\nSomething went wrong!\nPlease re-run the bot to try again")
+        # sleep(random.randint(3, config["delay"]))
+        sleep(max(config["delay"], 3))
         return False
 
 
@@ -238,6 +255,7 @@ def start(email, password, driver):
         if not checkResult:
             print('登录失败,写入刷新文件',email)
             writeNeedLogin(email, password)
+            deleteLoginCache(email)
             return
 
         if checkResult:
@@ -248,7 +266,9 @@ def start(email, password, driver):
             # get_reward_tokens(driver)
         else:
             # if os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
-            # os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
+            #     os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
+            # if os.path.exists("google-chrome//"+email):
+            #     shutil.rmtree("google-chrome//"+email)
             print("\n\nUnable to login to your Presearch account, please re-run the bot to try to login.")
     except Exception as e:
         print(e)
@@ -288,7 +308,8 @@ def start_thread(email, password):
 
 
 def job_function():
-    pool = ThreadPoolExecutor(max_workers=2)
+    mutex.acquire() # 上锁
+    pool = ThreadPoolExecutor(max_workers=1)
     root = "ExtraFiles//3-task//"
     for fl in os.listdir(root):
         accounts_data = open(os.path.join(root, fl), "r").readlines()
@@ -297,11 +318,13 @@ def job_function():
             # Extract Email and Password from accounts.txt
             password = account_splited[1].strip()
             email = account_splited[0].strip()
+            if check_local_login(email):
+                continue
             if check_local_today_task(email):
                 continue
             if email != "" and password != "":
                 pool.submit(start_thread, email, password)
-
+    mutex.release() # 释放锁
 
 
 def main():
