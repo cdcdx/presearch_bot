@@ -77,7 +77,7 @@ def login(email,password,driver):
         wait = ui.WebDriverWait(driver, 10)
         wait.until(page_loaded)
 
-        print("driver.get_cookies()",driver.get_cookies())
+        # print("driver.get_cookies()",driver.get_cookies())
         #Save cookies so you don't have to log in again next time
         pickle.dump(driver.get_cookies() , open("ExtraFiles//cookies//"+email+"_cookies.pkl","wb"))
 
@@ -99,12 +99,16 @@ def check_is_logged_in(driver):
         return True
     return False
 
+def ignore_extended_attributes(func, filename, exc_info):
+    is_meta_file = os.path.basename(filename).startswith("._")
+    if not (func is os.unlink and is_meta_file):
+        raise
 
 def deleteLoginCache(email):
     if os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
         os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
     if os.path.exists("google-chrome//"+email):
-        shutil.rmtree("google-chrome//"+email)
+        shutil.rmtree("google-chrome//"+email, onerror=ignore_extended_attributes)
 
 
 def deleteLoginSuccess(email,password):
@@ -127,8 +131,8 @@ for account in accounts_data:
     password = account_splited[1].strip()
     if email != "" and password !="":
         print("")
-        print("重新登录...",email,password)
         deleteLoginCache(email)
+        print("重新登录...",email,password)
         driver=init_browse(email);
         login(email,password,driver)
         driver.close()
