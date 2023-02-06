@@ -23,7 +23,7 @@ def create_account():
         f = open("ExtraFiles//1-reg-presearch//"+fl, "a+")
         account_index = 1
         while account_index<=40:
-            sleep(1)
+            sleep(2)
             account_index_2='%02d' % account_index
             account=mailprefix+str(account_index_2)
             f.write("{}{}:{}\n".format(account,mailsuffix, mailpwd))

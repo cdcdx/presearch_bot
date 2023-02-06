@@ -100,17 +100,17 @@ def NodeExists(driver,xpath):
         return False
 
 
-#申请开通邀请
+#开通邀请并生成随机名
 def referral(email,driver):
-    #申请
+    #开通邀请
     driver.get("https://account.presearch.com/referral-terms")
     if NodeExists(driver,'//*[@id="main"]/div[2]/form/div/label/input'):
         driver.find_element(By.XPATH,'//*[@id="main"]/div[2]/form/div/label/input').click()
         driver.find_element(By.XPATH, '//*[@id="main"]/div[2]/form/button').click()
-        sleep(2)
-    #获取链接
+        sleep(3)
+    #获取ID并生成随机名
     driver.get("https://account.presearch.com/referrals")
-    sleep(2)
+    sleep(3)
     referral_link = driver.find_element(By.XPATH, '//*[@id="beta-ref"]').text
     start = referral_link.find("=")+1
     parentId = referral_link[start::]

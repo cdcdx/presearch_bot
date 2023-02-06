@@ -49,8 +49,8 @@ def init_browse(email):
     driver.execute_script('return navigator.userAgent')
     # 最大等待10s
     # driver.set_page_load_timeout(10)
-    # driver.maximize_window()
-    driver.set_window_size(1024, 768)
+    driver.maximize_window()
+    # driver.set_window_size(1024, 768)
     return driver
 
 
@@ -155,28 +155,9 @@ def check_day_searchs(email, driver):
         return False
 
 
-#申请开通邀请
-def referral(email,driver):
-    #申请
-    driver.get("https://account.presearch.com/referral-terms")
-    if NodeExists(driver,'//*[@id="main"]/div[2]/form/div/label/input'):
-        driver.find_element(By.XPATH,'//*[@id="main"]/div[2]/form/div/label/input').click()
-        driver.find_element(By.XPATH, '//*[@id="main"]/div[2]/form/button').click()
-        sleep(2)
-    #获取链接
-    driver.get("https://account.presearch.com/referrals")
-    sleep(2)
-    referral_link = driver.find_element(By.XPATH, '//*[@id="beta-ref"]').text
-    start = referral_link.find("=")+1
-    parentId = referral_link[start::]
-    file = open('ExtraFiles//0-reg-mail//{}={}_{}.txt'.format(email,parentId,word_generator.random_word().strip()), 'w')
-    file.close()
-
-
 def loop_search(email, driver):
     try:
-        referral(email, driver)
-        link = "https://account.presearch.com/referrals"
+        link = "https://account.presearch.com"
         driver.get(link)
         wait = ui.WebDriverWait(driver, 60)
         wait.until(page_loaded)
