@@ -1,1 +1,1 @@
-python3.exe 4.login_email.py
+python3.exe 4.login_email.py %1
