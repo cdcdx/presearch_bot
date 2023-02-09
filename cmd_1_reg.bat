@@ -1,1 +1,1 @@
-python3.exe 1.reg_presearch.py
+"C:/Program Files/Python311/python.exe" %~dp0/1.reg_presearch.py

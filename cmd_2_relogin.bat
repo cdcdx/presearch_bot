@@ -1,1 +1,1 @@
-python3.exe 2.relogin.py
+"C:/Program Files/Python311/python.exe" %~dp0/2.relogin.py

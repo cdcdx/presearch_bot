@@ -1,1 +1,1 @@
-python3.exe 3.fast_lunch.py
+"C:/Program Files/Python311/python.exe" %~dp0/3.fast_lunch.py

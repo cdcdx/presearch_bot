@@ -1,1 +1,1 @@
-python3.exe 4.login_email.py %1
+"C:/Program Files/Python311/python.exe" %~dp0/4.login_email.py %1
