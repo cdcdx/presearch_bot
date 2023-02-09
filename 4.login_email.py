@@ -14,6 +14,8 @@ import os
 import sys
 import pickle
 import time
+import platform
+
 # 定时任务
 from apscheduler.schedulers.blocking import BlockingScheduler
 # 随机字符串
@@ -29,8 +31,11 @@ def init_browse(email):
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-    pwd = os.getcwd()
-    user_data_path = pwd + './/google-chrome//{}'.format(email)
+    user_data_path = os.getcwd()
+    if platform.system().lower() == 'windows':
+        user_data_path += '\\google-chrome\\{}'.format(email)
+    else: 
+        user_data_path += '/google-chrome/{}'.format(email)
     profile_name = "Profile " + str(config["profile_number"])
 
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36')
@@ -50,8 +55,8 @@ def init_browse(email):
     driver.execute_script('return navigator.userAgent')
     # 最大等待10s
     # driver.set_page_load_timeout(10)
-    driver.maximize_window()
-    # driver.set_window_size(1024, 768)
+    # driver.maximize_window()
+    driver.set_window_size(1024, 768)
     return driver
 
 

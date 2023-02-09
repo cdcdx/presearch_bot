@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import shutil
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import ui
@@ -13,6 +11,9 @@ from time import sleep
 import random
 import os
 import pickle
+import shutil
+import platform
+
 from shutil import copyfile
 from random_words import RandomWords
 word_generator = RandomWords()
@@ -23,8 +24,11 @@ def init_browse(email):
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-    pwd = os.getcwd()
-    user_data_path = pwd + './/google-chrome//{}'.format(email)
+    user_data_path = os.getcwd()
+    if platform.system().lower() == 'windows':
+        user_data_path += '\\google-chrome\\{}'.format(email)
+    else: 
+        user_data_path += '/google-chrome/{}'.format(email)
     profile_name = "Profile " + str(config["profile_number"])
 
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36')
@@ -75,8 +79,12 @@ def reg(email,password,driver):
         input()
         #Click in Login button
         driver.find_element(By.XPATH, '//*[@id="register-form"]/div[1]/form/div[6]/button').click()
-        sleep(5)
-        #Position yourself on your Presearch profile page
+        
+		# 获取当前页面URL
+        while driver.current_url != "https://account.presearch.com/":
+            sleep(60)
+        
+        # Position yourself on your Presearch profile page
         driver.get("https://account.presearch.com/")
         wait = ui.WebDriverWait(driver, 10)
         wait.until(page_loaded)
@@ -172,7 +180,7 @@ def regByfile(filename):
 
     accounts_data = open(filename, "r").readlines()
     for account in accounts_data:
-        if account == "" :
+        if account == "" or account == '\n' or account == '\r\n':
             continue
         account_splited = account.split(":", maxsplit=1)
         # Extract Email and Password from accounts.txt

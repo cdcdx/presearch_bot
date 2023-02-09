@@ -14,6 +14,9 @@ import random
 import os
 import pickle
 import time
+import shutil
+import platform
+
 # 全局锁
 mutex = threading.Lock()
 # 定时任务
@@ -31,8 +34,11 @@ def init_browse(email):
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-    pwd = os.getcwd()
-    user_data_path = pwd + './/google-chrome//{}'.format(email)
+    user_data_path = os.getcwd()
+    if platform.system().lower() == 'windows':
+        user_data_path += '\\google-chrome\\{}'.format(email)
+    else: 
+        user_data_path += '/google-chrome/{}'.format(email)
     profile_name = "Profile " + str(config["profile_number"])
 
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36')
@@ -315,7 +321,7 @@ def job_function():
     for fl in os.listdir(root):
         accounts_data = open(os.path.join(root, fl), "r").readlines()
         for account in accounts_data:
-            if account == "" :
+            if account == "" or account == '\n' or account == '\r\n':
                 continue
             account_splited = account.split(":", maxsplit=1)
             # Extract Email and Password from accounts.txt
