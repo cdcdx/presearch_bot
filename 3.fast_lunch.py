@@ -12,11 +12,12 @@ from datetime import datetime
 from time import sleep
 import random
 import os
+import sys
 import pickle
 import time
-import shutil
 import platform
 
+import shutil
 from shutil import copyfile
 
 # 全局锁
@@ -337,8 +338,12 @@ def job_function():
     mutex.acquire() # 上锁
     pool = ThreadPoolExecutor(max_workers=1)
     root = "ExtraFiles//3-task//"
-    for fl in os.listdir(root):
-        accounts_data = open(os.path.join(root, fl), "r").readlines()
+    for file in os.listdir(root):
+        if global_file != "":
+            if file != "" and not file.startswith(global_file):
+                continue
+        # print(file)
+        accounts_data = open(os.path.join(root, file), "r").readlines()
         for account in accounts_data:
             if account == "" or account == '\n' or account == '\r\n':
                 continue
@@ -368,6 +373,10 @@ def main():
     scheduler.start()
 
 try:
+    global global_file
+    global_file = ""
+    if len(sys.argv) == 2:
+        global_file = sys.argv[1]
     main()
 except ValueError as e:
     print(e)

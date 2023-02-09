@@ -10,11 +10,12 @@ from datetime import datetime
 from time import sleep
 import random
 import os
+import sys
 import pickle
 import time
-import shutil
 import platform
 
+import shutil
 from shutil import copyfile
 
 def init_browse(email):

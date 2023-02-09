@@ -17,10 +17,10 @@ mailpwd='zxcvbnm123'
 
 def create_account():
     root = 'ExtraFiles//0-reg-mail/'
-    for fl in os.listdir(root):
-        flpath = os.path.join(root, fl)
-        mailprefix=flpath[flpath.find("_")+1:flpath.find(".txt")]
-        f = open("ExtraFiles//1-reg-presearch//"+fl, "a+")
+    for file in os.listdir(root):
+        filepath = os.path.join(root, file)
+        mailprefix=filepath[filepath.find("_")+1:filepath.find(".txt")]
+        f = open("ExtraFiles//1-reg-presearch//"+file, "a+")
         account_index = 1
         while account_index<=40:
             sleep(2)
@@ -29,6 +29,6 @@ def create_account():
             f.write("{}{}:{}\n".format(account,mailsuffix, mailpwd))
             account_index+=1
         f.close()
-        os.remove(flpath)
+        os.remove(filepath)
 
 create_account()

@@ -10,10 +10,11 @@ from datetime import datetime
 from time import sleep
 import random
 import os
+import sys
 import pickle
-import shutil
 import platform
 
+import shutil
 from shutil import copyfile
 from random_words import RandomWords
 word_generator = RandomWords()
@@ -219,8 +220,8 @@ def regByfile(filename):
 
 
 root='ExtraFiles//1-reg-presearch/'
-for fl in os.listdir(root):
-    flpath=os.path.join(root,fl)
-    regByfile(flpath)
+for file in os.listdir(root):
+    filepath=os.path.join(root,file)
+    regByfile(filepath)
     #拷文件到task
-    shutil.move(flpath,"ExtraFiles//3-task//"+fl)
+    shutil.move(filepath,"ExtraFiles//3-task//"+file)

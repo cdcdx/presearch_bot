@@ -266,8 +266,10 @@ def main(email):
         pool.submit(start_thread, email)
 
 
-mail = sys.argv[1]
 try:
+    mail = ""
+    if len(sys.argv) == 2:
+        mail = sys.argv[1]
     main(mail)
 except ValueError as e:
     print(e)
