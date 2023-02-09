@@ -42,7 +42,7 @@ def init_browse(email):
     options.add_argument('--proxy-server=' + config['https_proxy'])
 
     # 浏览器不提供可视化界面。Linux下如果系统不支持可视化不加这条会启动失败
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
 
     # driver = webdriver.Chrome('./chromedriver', options=options)
     # service=Service(r'./chromedriver.exe')

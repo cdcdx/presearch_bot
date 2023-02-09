@@ -1,6 +1,6 @@
 @echo off
 title 登录账号
-color e2
+@REM color e2
 echo.
 
 if (%1%)==() (
