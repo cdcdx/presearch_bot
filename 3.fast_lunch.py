@@ -315,6 +315,8 @@ def job_function():
     for fl in os.listdir(root):
         accounts_data = open(os.path.join(root, fl), "r").readlines()
         for account in accounts_data:
+            if account == "" :
+                continue
             account_splited = account.split(":", maxsplit=1)
             # Extract Email and Password from accounts.txt
             password = account_splited[1].strip()

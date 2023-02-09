@@ -172,6 +172,8 @@ def regByfile(filename):
 
     accounts_data = open(filename, "r").readlines()
     for account in accounts_data:
+        if account == "" :
+            continue
         account_splited = account.split(":", maxsplit=1)
         # Extract Email and Password from accounts.txt
         email = account_splited[0].strip()

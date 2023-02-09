@@ -126,6 +126,8 @@ def deleteLoginSuccess(email,password):
 accounts_data = open("ExtraFiles//2-relogin//login_reload.txt", "r").readlines()
 accounts = {}
 for account in accounts_data:
+    if account == "" :
+        continue
     account_splited = account.split(":", maxsplit=1)
     # Extract Email and Password from accounts.txt
     email = account_splited[0].strip()
