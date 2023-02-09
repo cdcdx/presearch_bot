@@ -67,12 +67,12 @@ def check_is_logged_in(driver):
     return False
 
 
-# def writeNeedLogin(email, password):
-#     if check_login_reload(email):
-#         return
-#     f = open("ExtraFiles//2-relogin//login_reload.txt", "a+")
-#     f.write("{}:{}\n".format(email, password))
-#     f.close()
+def writeNeedLogin(email, password):
+    if check_login_reload(email):
+        return
+    f = open("ExtraFiles//2-relogin//login_reload.txt", "a+")
+    f.write("{}:{}\n".format(email, password))
+    f.close()
 
 
 def check_login_reload(email):
@@ -202,7 +202,8 @@ def start(email, driver):
 
         if not checkResult:
             print('登录失败,写入刷新文件',email)
-            # writeNeedLogin(email, password)
+            password='zxcvbnm123'
+            writeNeedLogin(email, password)
             return
 
         if checkResult:
