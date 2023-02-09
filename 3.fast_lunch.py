@@ -17,6 +17,8 @@ import time
 import shutil
 import platform
 
+from shutil import copyfile
+
 # 全局锁
 mutex = threading.Lock()
 # 定时任务
@@ -76,11 +78,22 @@ def check_is_logged_in(driver):
     return False
 
 
+def ignore_extended_attributes(func, filename, exc_info):
+    is_meta_file = os.path.basename(filename).startswith("._")
+    if not (func is os.unlink and is_meta_file):
+        raise
+
+
 def deleteLoginCache(email):
     if os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
         os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
-    if os.path.exists("google-chrome//"+email):
-        shutil.rmtree("google-chrome//"+email)
+    user_data_path = os.getcwd()
+    if platform.system().lower() == 'windows':
+        user_data_path += '\\google-chrome\\{}'.format(email)
+    else: 
+        user_data_path += '/google-chrome/{}'.format(email)
+    if os.path.exists(user_data_path):
+        shutil.rmtree(user_data_path, onerror=ignore_extended_attributes)
 
 
 def writeNeedLogin(email, password):
@@ -204,11 +217,11 @@ def loop_search(email, driver):
                 # sleep(random.randint(3, config["delay"]))
                 sleep(max(config["delay"], 3))
 
-                if i%5 == 1:
-                    # It will do the daily searches only if they are not all done yet.
-                    day_task = check_day_searchs(email, driver)
-                    if day_task:
-                        break
+                # if i%5 == 1:
+                #     # It will do the daily searches only if they are not all done yet.
+                #     day_task = check_day_searchs(email, driver)
+                #     if day_task:
+                #         break
         else:
             for word in words:
                 word = word.strip()
@@ -275,8 +288,13 @@ def start(email, password, driver):
         else:
             # if os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
             #     os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
-            # if os.path.exists("google-chrome//"+email):
-            #     shutil.rmtree("google-chrome//"+email)
+            # user_data_path = os.getcwd()
+            # if platform.system().lower() == 'windows':
+            #     user_data_path += '\\google-chrome\\{}'.format(email)
+            # else: 
+            #     user_data_path += '/google-chrome/{}'.format(email)
+            # if os.path.exists(user_data_path):
+            #     shutil.rmtree(user_data_path, onerror=ignore_extended_attributes)
             print("\n\nUnable to login to your Presearch account, please re-run the bot to try to login.")
     except Exception as e:
         print(e)

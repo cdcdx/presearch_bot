@@ -15,6 +15,8 @@ import time
 import shutil
 import platform
 
+from shutil import copyfile
+
 def init_browse(email):
     #  Setting up chrome
     options = webdriver.ChromeOptions()
@@ -79,7 +81,7 @@ def login(email,password,driver):
 
 		# 获取当前页面URL
         while driver.current_url != "https://account.presearch.com/":
-            sleep(60)
+            sleep(3)
         
         # Position yourself on your Presearch profile page
         driver.get("https://account.presearch.com/")
@@ -113,11 +115,17 @@ def ignore_extended_attributes(func, filename, exc_info):
     if not (func is os.unlink and is_meta_file):
         raise
 
+
 def deleteLoginCache(email):
     if os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
         os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
-    if os.path.exists("google-chrome//"+email):
-        shutil.rmtree("google-chrome//"+email, onerror=ignore_extended_attributes)
+    user_data_path = os.getcwd()
+    if platform.system().lower() == 'windows':
+        user_data_path += '\\google-chrome\\{}'.format(email)
+    else: 
+        user_data_path += '/google-chrome/{}'.format(email)
+    if os.path.exists(user_data_path):
+        shutil.rmtree(user_data_path, onerror=ignore_extended_attributes)
 
 
 def deleteLoginSuccess(email,password):

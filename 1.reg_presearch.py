@@ -161,6 +161,24 @@ def writeLoginSuccess(parentId,email,password):
     # f_w.close()
 
 
+def ignore_extended_attributes(func, filename, exc_info):
+    is_meta_file = os.path.basename(filename).startswith("._")
+    if not (func is os.unlink and is_meta_file):
+        raise
+
+
+def deleteLoginCache(email):
+    if os.path.exists("ExtraFiles//cookies//"+email+"_cookies.pkl"):
+        os.remove("ExtraFiles//cookies//"+email+"_cookies.pkl")
+    user_data_path = os.getcwd()
+    if platform.system().lower() == 'windows':
+        user_data_path += '\\google-chrome\\{}'.format(email)
+    else: 
+        user_data_path += '/google-chrome/{}'.format(email)
+    if os.path.exists(user_data_path):
+        shutil.rmtree(user_data_path, onerror=ignore_extended_attributes)
+
+
 def register(driver,parentId,email,password):
     link = "https://presearch.com/signup?rid={}".format(parentId)
     driver.get(link)
@@ -188,6 +206,7 @@ def regByfile(filename):
         password = account_splited[1].strip()
         if email != "" and password != "" and check_reg_status(email) == False :
             print("")
+            deleteLoginCache(email)
             print("开始注册...",email,password)
             driver=init_browse(email)
             isRegister=register(driver,parentId,email,password)
