@@ -103,10 +103,11 @@ def check_login_reload(email):
 
 
 def write_today_task_finish(email):
-    today_date = datetime.today().strftime('%Y-%m-%d')
-    f = open("ExtraFiles//task_log//" + today_date + ".txt", "a+")
-    f.write("{}\n".format(email))
-    f.close()
+    if not check_local_today_task(email):
+        today_date = datetime.today().strftime('%Y-%m-%d')
+        f = open("ExtraFiles//task_log//" + today_date + ".txt", "a+")
+        f.write("{}\n".format(email))
+        f.close()
 
 
 def check_local_today_task(email):
