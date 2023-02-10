@@ -25,6 +25,12 @@ def init_browse(email):
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
+    if global_proxy != "":
+        proxy_array = config['https_proxy'][int(global_proxy)]
+    else:
+        proxy_array = config['https_proxy'][0]
+    print("proxy: "+proxy_array)
+
     user_data_path = os.getcwd()
     if platform.system().lower() == 'windows':
         user_data_path += '\\google-chrome\\{}'.format(email)
@@ -36,7 +42,8 @@ def init_browse(email):
     options.add_argument('--user-data-dir=' + user_data_path)
     options.add_argument('--profile-directory=' + profile_name)
     # options.add_argument('--proxy-server=http://127.0.0.1:10809')
-    options.add_argument('--proxy-server=' + config['https_proxy'])
+    # options.add_argument('--proxy-server=' + config['https_proxy'])
+    options.add_argument('--proxy-server=' + proxy_array)
 
     # 浏览器不提供可视化界面。Linux下如果系统不支持可视化不加这条会启动失败
     # options.add_argument('--headless')
@@ -219,9 +226,19 @@ def regByfile(filename):
             print("")
 
 
-root='ExtraFiles//1-reg-presearch/'
-for file in os.listdir(root):
-    filepath=os.path.join(root,file)
-    regByfile(filepath)
-    #拷文件到task
-    shutil.move(filepath,"ExtraFiles//3-task//"+file)
+def main():
+    root='ExtraFiles//1-reg-presearch/'
+    for file in os.listdir(root):
+        filepath=os.path.join(root,file)
+        regByfile(filepath)
+        #拷文件到task
+        shutil.move(filepath,"ExtraFiles//3-task//"+file)
+
+try:
+    global global_proxy
+    global_proxy = ""
+    if len(sys.argv) == 2:
+        global_proxy = sys.argv[2]
+    main()
+except ValueError as e:
+    print(e)

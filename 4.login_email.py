@@ -31,6 +31,12 @@ def init_browse(email):
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
+    if global_proxy != "":
+        proxy_array = config['https_proxy'][int(global_proxy)]
+    else:
+        proxy_array = config['https_proxy'][0]
+    print("proxy: "+proxy_array)
+
     user_data_path = os.getcwd()
     if platform.system().lower() == 'windows':
         user_data_path += '\\google-chrome\\{}'.format(email)
@@ -42,7 +48,8 @@ def init_browse(email):
     options.add_argument('--user-data-dir=' + user_data_path)
     options.add_argument('--profile-directory=' + profile_name)
     # options.add_argument('--proxy-server=http://127.0.0.1:10809')
-    options.add_argument('--proxy-server=' + config['https_proxy'])
+    # options.add_argument('--proxy-server=' + config['https_proxy'])
+    options.add_argument('--proxy-server=' + proxy_array)
 
     # 浏览器不提供可视化界面。Linux下如果系统不支持可视化不加这条会启动失败
     # options.add_argument('--headless')
@@ -247,29 +254,29 @@ def login_with_cookies(email, driver):
         return False
 
 
-def start_thread(email):
+def main(global_email):
     print("")
-    print("开始处理...", email)
+    if global_email == "":
+        global_email = "cdcdx888@gmail.com"
+    print("开始处理...", global_email)
     t = time.time()
     # 需要5s
-    driver = init_browse(email);
-    print(f'加载driver:{time.time() - t:.8f}s',email)
-    start(email, driver)
+    driver = init_browse(global_email);
+    print(f'加载driver:{time.time() - t:.8f}s',global_email)
+    start(global_email, driver)
     print("")
-
-
-def main(email):
-    pool = ThreadPoolExecutor(max_workers=1)
-    # if check_local_today_task(email):
-    #     return
-    if email != "":
-        pool.submit(start_thread, email)
 
 
 try:
-    mail = ""
+    global global_email
+    global_email = ""
+    global global_proxy
+    global_proxy = ""
     if len(sys.argv) == 2:
-        mail = sys.argv[1]
-    main(mail)
+        global_email = sys.argv[1]
+    if len(sys.argv) == 3:
+        global_email = sys.argv[1]
+        global_proxy = sys.argv[2]
+    main(global_email)
 except ValueError as e:
     print(e)

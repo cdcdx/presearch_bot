@@ -8,7 +8,8 @@ config = {
     ## z2g4
     # "https_proxy": "http://192.168.199.80:10809"
     ## iStoreOS
-    "https_proxy": "socks5://192.168.199.2:1080"
+    # "https_proxy": "socks5://192.168.199.2:1080"
     ## local
     # "https_proxy": "http://127.0.0.1:10809"
+    "https_proxy": ['socks5://192.168.199.2:1080','http://192.168.199.80:10809']
 }
