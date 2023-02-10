@@ -3,7 +3,7 @@ title 自动刷量
 @REM color e2
 echo.
 
-if (%1%)!=() (
+if not (%1%)==() (
   set file=%1%
 )
 

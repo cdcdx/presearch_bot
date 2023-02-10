@@ -218,11 +218,11 @@ def loop_search(email, driver):
                 # sleep(random.randint(3, config["delay"]))
                 sleep(max(config["delay"], 3))
 
-                # if i%5 == 1:
-                #     # It will do the daily searches only if they are not all done yet.
-                #     day_task = check_day_searchs(email, driver)
-                #     if day_task:
-                #         break
+                if i%5 == 1:
+                    # It will do the daily searches only if they are not all done yet.
+                    day_task = check_day_searchs(email, driver)
+                    if day_task:
+                        break
         else:
             for word in words:
                 word = word.strip()
